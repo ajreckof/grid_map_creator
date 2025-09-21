@@ -12,6 +12,7 @@
 #include "merging_tile_to_grid_data.h"
 #include "scene_tile_to_grid_data.h"
 #include "mesh_utility.h"
+#include "editor_plugin/grid_map_creator_plugin.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -19,7 +20,7 @@
 
 using namespace godot;
 
-void initialize_example_module(ModuleInitializationLevel p_level) {
+void initialize_module(ModuleInitializationLevel p_level) {
 	switch (p_level) {
 		case MODULE_INITIALIZATION_LEVEL_SCENE:
 			GDREGISTER_CLASS(AtlasMesh);
@@ -38,7 +39,8 @@ void initialize_example_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_CLASS(TileToGridSet);
 			break;
 		case MODULE_INITIALIZATION_LEVEL_EDITOR:
-			GDREGISTER_CLASS(ReadOnlyResourcePreview);
+			GDREGISTER_CLASS(GridMapCreatorPlugin);
+			EditorPlugins::add_by_type<GridMapCreatorPlugin>();
 			break;
 		default:
 			break;
@@ -46,10 +48,15 @@ void initialize_example_module(ModuleInitializationLevel p_level) {
 
 }
 
-void uninitialize_example_module(ModuleInitializationLevel p_level) {
-	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
-		return;
+void uninitialize_module(ModuleInitializationLevel p_level) {
+	switch (p_level) {
+		case MODULE_INITIALIZATION_LEVEL_EDITOR:
+			EditorPlugins::remove_by_type<GridMapCreatorPlugin>();
+			break;
+		default:
+			break;
 	}
+
 }
 
 extern "C" {
@@ -57,8 +64,8 @@ extern "C" {
 GDExtensionBool GDE_EXPORT example_library_init(GDExtensionInterfaceGetProcAddress p_get_proc_address, const GDExtensionClassLibraryPtr p_library, GDExtensionInitialization *r_initialization) {
 	godot::GDExtensionBinding::InitObject init_obj(p_get_proc_address, p_library, r_initialization);
 
-	init_obj.register_initializer(initialize_example_module);
-	init_obj.register_terminator(uninitialize_example_module);
+	init_obj.register_initializer(initialize_module);
+	init_obj.register_terminator(uninitialize_module);
 	init_obj.set_minimum_library_initialization_level(MODULE_INITIALIZATION_LEVEL_SCENE);
 
 	return init_obj.init();
