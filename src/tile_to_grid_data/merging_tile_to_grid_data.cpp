@@ -3,7 +3,7 @@
 #include <godot_cpp/classes/editor_interface.hpp>
 #include <godot_cpp/classes/tile_set.hpp>
 
-#include "mesh_utility.h"
+#include "mesh_utility/mesh_utility.h"
 
 namespace godot {
 

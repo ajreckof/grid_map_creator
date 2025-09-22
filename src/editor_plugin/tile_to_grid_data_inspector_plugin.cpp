@@ -1,6 +1,6 @@
 #include "tile_to_grid_data_inspector_plugin.h"
 #include "editor_property_enum_icon.h"
-#include "../read_only_resource_preview.h"
+#include "read_only_resource_preview.h"
 
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>

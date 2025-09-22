@@ -9,7 +9,7 @@
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <godot_cpp/core/math.hpp>
 
-#include "mesh_utility.h"
+#include "mesh_utility/mesh_utility.h"
 
 using namespace godot;
 using namespace Math;

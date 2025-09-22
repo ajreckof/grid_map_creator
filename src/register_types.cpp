@@ -1,18 +1,19 @@
 #include "register_types.h"
 
-#include "atlas_mesh.h"
-#include "transformed_mesh.h"
-#include "merged_mesh.h"
-#include "tile_to_grid_data.h"
-#include "tile_to_grid_set.h"
+#include "editor_plugin/grid_map_creator_plugin.h"
+#include "editor_plugin/read_only_resource_preview.h"
+#include "mesh_utility/atlas_mesh.h"
+#include "mesh_utility/transformed_mesh.h"
+#include "mesh_utility/merged_mesh.h"
+#include "mesh_utility/mesh_utility.h"
 #include "preview_texture/mesh_preview_texture.h"
 #include "preview_texture/scene_preview_texture.h"
-#include "read_only_resource_preview.h"
+#include "tile_to_grid_data/tile_to_grid_data.h"
+#include "tile_to_grid_data/merging_tile_to_grid_data.h"
+#include "tile_to_grid_data/scene_tile_to_grid_data.h"
+#include "tile_to_grid_set.h"
+#include "tile_to_grid.h"
 #include "merged_image.h"
-#include "merging_tile_to_grid_data.h"
-#include "scene_tile_to_grid_data.h"
-#include "mesh_utility.h"
-#include "editor_plugin/grid_map_creator_plugin.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -37,6 +38,7 @@ void initialize_module(ModuleInitializationLevel p_level) {
 			GDREGISTER_CLASS(MergingTileToGridData);
 			GDREGISTER_CLASS(SceneTileToGridData);
 			GDREGISTER_CLASS(TileToGridSet);
+			GDREGISTER_CLASS(TileToGrid);
 			break;
 		case MODULE_INITIALIZATION_LEVEL_EDITOR:
 			GDREGISTER_CLASS(GridMapCreatorPlugin);

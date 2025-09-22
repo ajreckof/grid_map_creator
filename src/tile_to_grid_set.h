@@ -15,7 +15,7 @@
 #include <godot_cpp/variant/vector2i.hpp>
 #include <godot_cpp/variant/vector3.hpp>
 
-#include "tile_to_grid_data.h"
+#include "tile_to_grid_data/tile_to_grid_data.h"
 
 namespace godot {
 

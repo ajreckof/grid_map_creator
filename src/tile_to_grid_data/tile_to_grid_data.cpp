@@ -11,7 +11,7 @@
 #include "preview_texture/mesh_preview_texture.h"
 #include "preview_texture/scene_preview_texture.h"
 
-#include "merged_mesh.h"
+#include "mesh_utility/merged_mesh.h"
 #include "merged_image.h"
 
 namespace godot {// namespace godot

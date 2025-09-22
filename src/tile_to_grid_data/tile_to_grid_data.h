@@ -20,7 +20,7 @@
 #include <godot_cpp/templates/hash_map.hpp>
 
 
-#include "transformed_mesh.h"
+#include "mesh_utility/transformed_mesh.h"
 
 
 

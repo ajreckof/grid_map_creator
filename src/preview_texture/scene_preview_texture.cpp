@@ -10,7 +10,7 @@
 #include <godot_cpp/core/math.hpp>
 #include <godot_cpp/classes/visual_instance3d.hpp>
 
-#include "mesh_utility.h"
+#include "mesh_utility/mesh_utility.h"
 #include "object_utility.h"
 
 using namespace godot;
