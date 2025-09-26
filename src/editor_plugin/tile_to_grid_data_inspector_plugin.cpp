@@ -1,6 +1,7 @@
 #include "tile_to_grid_data_inspector_plugin.h"
 #include "editor_property_enum_icon.h"
 #include "read_only_resource_preview.h"
+#include "object_utility.h"
 
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
@@ -28,7 +29,7 @@ bool TileToGridDataInspectorPlugin::_parse_property(Object *object, Variant::Typ
 		String class_name_of_property = hint_string.get_slice("|", 1);
 		if (!class_name_of_property.is_empty()) {
 			// Assertion equivalent - check if the property exists on the object
-			if (!object->has_method("get") || object->get(class_name_of_property).get_type() == Variant::NIL) {
+			if (!object_has_property(object, class_name_of_property)) {
 				UtilityFunctions::printerr("Property does not exist on object. Object class: ", object->get_class(), ", Property: ", class_name_of_property);
 				return false;
 			}
@@ -47,6 +48,8 @@ bool TileToGridDataInspectorPlugin::_parse_property(Object *object, Variant::Typ
 			
 			String enum_part = hint_string.get_slice("|", 0);
 			PackedStringArray enum_entries = enum_part.split(",");
+			UtilityFunctions::print("enum_entries: ", enum_entries);
+			UtilityFunctions::print("enum_icons: ", get_enum_values_to_icon);
 			
 			for (int i = 0; i < enum_entries.size(); i++) {
 				PackedStringArray enum_name_value = enum_entries[i].split(":");

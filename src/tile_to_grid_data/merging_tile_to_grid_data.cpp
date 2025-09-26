@@ -125,7 +125,7 @@ void MergingTileToGridData::_get_property_list(List<PropertyInfo> *p_list) const
 
     String hint_string;
     if (terrain_set < terrain_set_to_hint_string.size() && terrain_set >= 0) {
-        hint_string = terrain_set_to_hint_string[terrain_set] + String("|_terrain_bit_to_icon");
+        hint_string = (String)terrain_set_to_hint_string[terrain_set] + String("|_terrain_bit_to_icon");
     } else {
         hint_string = "No terrain : -1|_terrain_bit_to_icon"; // Default to -1 if terrain_set is out of bounds
     }
@@ -158,7 +158,7 @@ void MergingTileToGridData::_validate_property(PropertyInfo &p_property) const {
 
     if (p_property.name == StringName("center_bit")) {
         if (terrain_set < terrain_set_to_hint_string.size() && terrain_set >= 0) {
-            p_property.hint_string = terrain_set_to_hint_string[terrain_set] + String("|_terrain_bit_to_icon");
+            p_property.hint_string = (String)terrain_set_to_hint_string[terrain_set] + String("|_terrain_bit_to_icon");
         } else {
             p_property.hint_string = "No terrain : -1|_terrain_bit_to_icon"; // Default to -1 if terrain_set is out of bounds
         }

@@ -32,8 +32,6 @@ void TileToGrid::_bind_methods() {
     ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "tile_to_grid_set", PROPERTY_HINT_RESOURCE_TYPE, "TileToGridSet"), "set_tile_to_grid_set", "get_tile_to_grid_set");
 
     // Method bindings
-    ClassDB::bind_method(D_METHOD("copy_tiles"), &TileToGrid::copy_tiles);
-    ClassDB::bind_method(D_METHOD("clear_tiles"), &TileToGrid::clear_tiles);
     ClassDB::bind_static_method(get_class_static(), D_METHOD("tile_map_to_grid_map_position", "tile_map_pos", "height"), &TileToGrid::tile_map_to_grid_map_position);
     ClassDB::bind_static_method(get_class_static(), D_METHOD("grid_map_to_tile_map_position", "grid_map_pos"), &TileToGrid::grid_map_to_tile_map_position);
     ClassDB::bind_method(D_METHOD("global_to_grid", "global_position"), &TileToGrid::global_to_grid);
@@ -44,10 +42,20 @@ void TileToGrid::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_cell_tile_data", "coords"), &TileToGrid::get_cell_tile_data);
     ClassDB::bind_method(D_METHOD("get_used_rect"), &TileToGrid::get_used_rect);
     ClassDB::bind_method(D_METHOD("create_tile_from_scene", "tile_pos", "tile_scene", "tile_layer"), &TileToGrid::create_tile_from_scene, DEFVAL(Variant()));
+    ClassDB::bind_method(D_METHOD("get_build_grid_map"), &TileToGrid::get_build_grid_map);
+    ClassDB::bind_method(D_METHOD("get_clear_grid_map"), &TileToGrid::get_clear_grid_map);
 
     // Tool button bindings (equivalent to @export_tool_button)
-    ADD_PROPERTY(PropertyInfo(Variant::NIL, "BuildGridmap", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_CHECKABLE), "", "");
-    ADD_PROPERTY(PropertyInfo(Variant::NIL, "ClearGridmap", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_CHECKABLE), "", "");
+    ADD_PROPERTY(PropertyInfo(Variant::CALLABLE, "BuildGridmap", PROPERTY_HINT_TOOL_BUTTON, "BuildGridmap", PROPERTY_USAGE_EDITOR), "", "get_build_grid_map");
+    ADD_PROPERTY(PropertyInfo(Variant::CALLABLE, "ClearGridmap", PROPERTY_HINT_TOOL_BUTTON, "ClearGridmap", PROPERTY_USAGE_EDITOR), "", "get_clear_grid_map");
+}
+
+Callable TileToGrid::get_build_grid_map() {
+    return callable_mp(this, &TileToGrid::copy_tiles);
+}
+
+Callable TileToGrid::get_clear_grid_map() {
+    return callable_mp(this, &TileToGrid::clear_tiles);
 }
 
 // Property setters/getters

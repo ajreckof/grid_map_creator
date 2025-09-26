@@ -63,6 +63,9 @@ public:
 protected:
     static void _bind_methods();
 
+	Callable get_build_grid_map();
+    Callable get_clear_grid_map();
+
 private:
     // Properties
     TypedArray<TileMapLayer> tile_map_layers;

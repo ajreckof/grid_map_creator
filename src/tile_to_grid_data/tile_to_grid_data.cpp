@@ -125,10 +125,10 @@ void TileToGridData::set_terrain_set_to_terrain_bit_to_icon(Vector<TypedArray<Te
     notify_property_list_changed();
 }
 
-PackedStringArray TileToGridData::get_terrain_set_to_hint_string() const {
+TypedArray<String> TileToGridData::get_terrain_set_to_hint_string() const {
     return terrain_set_to_hint_string;
 }
-void TileToGridData::set_terrain_set_to_hint_string(PackedStringArray p_terrain_set_to_hint_string) {
+void TileToGridData::set_terrain_set_to_hint_string(TypedArray<String> p_terrain_set_to_hint_string) {
     if (p_terrain_set_to_hint_string == terrain_set_to_hint_string) {
         return; // No change
     }

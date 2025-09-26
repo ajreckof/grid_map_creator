@@ -37,7 +37,7 @@ TileToGridSet::~TileToGridSet() {
 void TileToGridSet::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_tile_set"), &TileToGridSet::get_tile_set);
     ClassDB::bind_method(D_METHOD("set_tile_set", "tile_set"), &TileToGridSet::set_tile_set);
-    ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "tile_set", PROPERTY_HINT_RESOURCE_TYPE, "TileSet", PROPERTY_USAGE_READ_ONLY | PROPERTY_USAGE_STORAGE), "set_tile_set", "get_tile_set");
+    ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "tile_set", PROPERTY_HINT_RESOURCE_TYPE, "TileSet", PROPERTY_USAGE_READ_ONLY | PROPERTY_USAGE_STORAGE | PROPERTY_USAGE_EDITOR_INSTANTIATE_OBJECT), "set_tile_set", "get_tile_set");
 
     ClassDB::bind_method(D_METHOD("get_tile_size"), &TileToGridSet::get_tile_size);
     ClassDB::bind_method(D_METHOD("set_tile_size", "tile_size"), &TileToGridSet::set_tile_size);
@@ -67,11 +67,7 @@ void TileToGridSet::_bind_methods() {
 }
 
 void TileToGridSet::set_tile_set(Ref<TileSet> p_tile_set) {
-
-    if (!Engine::get_singleton()->is_editor_hint()) {
-        // Si nous sommes dans l'éditeur, nous n'avons pas besoin de créer un viewport
-        return;
-    }
+    UtilityFunctions::print("TileToGridSet: Setting TileSet");
     if (!p_tile_set.is_valid()){
         p_tile_set = (Ref<TileSet>)memnew(TileSet);
     }
@@ -114,7 +110,7 @@ void TileToGridSet::set_tile_set(Ref<TileSet> p_tile_set) {
         terrain_set_hint_string += vformat(",Terrain Set %d", terrain_set_to_hint_string.size());
         for (int j = 0; j < tile_set->get_terrains_count(i); j++) {
             terrain_set_to_terrain_bit_to_icon.get(i).push_back(create_texture_from_color(tile_set->get_terrain_color(i, j)));
-            terrain_set_to_hint_string[i] += vformat(",%s", tile_set->get_terrain_name(i, j));
+            terrain_set_to_hint_string[i] = (String)terrain_set_to_hint_string[i] + vformat(",%s", tile_set->get_terrain_name(i, j));
         }
     }
     print_line("terrain_set_to_hint_string : ", terrain_set_to_hint_string);
@@ -339,6 +335,37 @@ void TileToGridSet::_get_property_list(List<PropertyInfo> *p_list) const {
     }
 }
 
+void TileToGridSet::set_terrain_set_terrain_count(int terrain_set_index, int p_value){
+    int new_count = p_value;
+    while (tile_set->get_terrains_count(terrain_set_index) < new_count) {
+        tile_set->add_terrain(terrain_set_index);
+        print_line("terrain_set_to_hint_string pre : ", terrain_set_to_hint_string);
+        for (TypedArray<Texture2D> terrain_bit_to_icon : terrain_set_to_terrain_bit_to_icon) {
+            print_line("terrain_set_to_terrain_bit_to_icon pre : ", terrain_bit_to_icon);
+        }
+        terrain_set_to_hint_string[terrain_set_index] = (String) terrain_set_to_hint_string[terrain_set_index] + ", " + tile_set->get_terrain_name(terrain_set_index, tile_set->get_terrains_count(terrain_set_index) - 1);
+        print_line("terrain_set_to_hint_string post : ", terrain_set_to_hint_string);
+        for (TypedArray<Texture2D> terrain_bit_to_icon : terrain_set_to_terrain_bit_to_icon) {
+            print_line("terrain_set_to_terrain_bit_to_icon post : ", terrain_bit_to_icon);
+        }
+        terrain_set_to_terrain_bit_to_icon.get(terrain_set_index).push_back(create_texture_from_color(tile_set->get_terrain_color(terrain_set_index, tile_set->get_terrains_count(terrain_set_index) - 1)));
+    }
+    while (tile_set->get_terrains_count(terrain_set_index) > new_count) {
+        tile_set->remove_terrain(terrain_set_index, tile_set->get_terrains_count(terrain_set_index) - 1);
+        print_line("terrain_set_to_hint_string pre : ", terrain_set_to_hint_string);
+        for (TypedArray<Texture2D> terrain_bit_to_icon : terrain_set_to_terrain_bit_to_icon) {
+            print_line("terrain_set_to_terrain_bit_to_icon pre : ", terrain_bit_to_icon);
+        }
+        terrain_set_to_hint_string[terrain_set_index] = ((String)terrain_set_to_hint_string[terrain_set_index]).rsplit(",",true, 1)[0]; // Remove last terrain name
+        print_line("terrain_set_to_hint_string post : ", terrain_set_to_hint_string);
+        for (TypedArray<Texture2D> terrain_bit_to_icon : terrain_set_to_terrain_bit_to_icon) {
+            print_line("terrain_set_to_terrain_bit_to_icon post : ", terrain_bit_to_icon);
+        }
+        terrain_set_to_terrain_bit_to_icon.get(terrain_set_index).pop_back(); // Remove last terrain icon
+    }
+    notify_property_list_changed();
+}
+
 bool TileToGridSet::_get(const StringName &p_name, Variant &r_ret) const {
     String name_str = p_name;
     if (name_str.begins_with("terrain_set_")) {
@@ -400,34 +427,7 @@ bool TileToGridSet::_set(const StringName &p_name, const Variant &p_value) {
                     tile_set->set_terrain_set_mode(terrain_set_index, (TileSet::TerrainMode)(int)p_value);
                     return true;
                 } else if (property == "terrain_count") {
-                    int new_count = p_value;
-                    while (tile_set->get_terrains_count(terrain_set_index) < new_count) {
-                        tile_set->add_terrain(terrain_set_index);
-                        print_line("terrain_set_to_hint_string pre : ", terrain_set_to_hint_string);
-                        for (TypedArray<Texture2D> terrain_bit_to_icon : terrain_set_to_terrain_bit_to_icon) {
-                            print_line("terrain_set_to_terrain_bit_to_icon pre : ", terrain_bit_to_icon);
-                        }
-                        terrain_set_to_hint_string[terrain_set_index] += ", " + tile_set->get_terrain_name(terrain_set_index, tile_set->get_terrains_count(terrain_set_index) - 1);
-                        print_line("terrain_set_to_hint_string post : ", terrain_set_to_hint_string);
-                        for (TypedArray<Texture2D> terrain_bit_to_icon : terrain_set_to_terrain_bit_to_icon) {
-                            print_line("terrain_set_to_terrain_bit_to_icon post : ", terrain_bit_to_icon);
-                        }
-                        terrain_set_to_terrain_bit_to_icon.get(terrain_set_index).push_back(create_texture_from_color(tile_set->get_terrain_color(terrain_set_index, tile_set->get_terrains_count(terrain_set_index) - 1)));
-                    }
-                    while (tile_set->get_terrains_count(terrain_set_index) > new_count) {
-                        tile_set->remove_terrain(terrain_set_index, tile_set->get_terrains_count(terrain_set_index) - 1);
-                        print_line("terrain_set_to_hint_string pre : ", terrain_set_to_hint_string);
-                        for (TypedArray<Texture2D> terrain_bit_to_icon : terrain_set_to_terrain_bit_to_icon) {
-                            print_line("terrain_set_to_terrain_bit_to_icon pre : ", terrain_bit_to_icon);
-                        }
-                        terrain_set_to_hint_string[terrain_set_index] = terrain_set_to_hint_string[terrain_set_index].rsplit(",",true, 1)[0]; // Remove last terrain name
-                        print_line("terrain_set_to_hint_string post : ", terrain_set_to_hint_string);
-                        for (TypedArray<Texture2D> terrain_bit_to_icon : terrain_set_to_terrain_bit_to_icon) {
-                            print_line("terrain_set_to_terrain_bit_to_icon post : ", terrain_bit_to_icon);
-                        }
-                        terrain_set_to_terrain_bit_to_icon.get(terrain_set_index).pop_back(); // Remove last terrain icon
-                    }
-                    notify_property_list_changed();
+                    set_terrain_set_terrain_count(terrain_set_index, p_value);
                     return true;
                 } else if (property.begins_with("terrain_") && parts.size() >= 3) {
                     int terrain_index = property.get_slice("_", 1).to_int();
@@ -435,13 +435,15 @@ bool TileToGridSet::_set(const StringName &p_name, const Variant &p_value) {
                     if (terrain_index >= 0 && terrain_index < tile_set->get_terrains_count(terrain_set_index)) {
                         if (terrain_property == "name") {
                             tile_set->set_terrain_name(terrain_set_index, terrain_index, p_value);
-                            PackedStringArray hint_string_split = terrain_set_to_hint_string[terrain_set_index].split(",");
+                            PackedStringArray hint_string_split = ((String) terrain_set_to_hint_string[terrain_set_index]).split(",");
                             hint_string_split[terrain_index + 1] = p_value;
                             terrain_set_to_hint_string[terrain_set_index] = String(",").join(hint_string_split);
+                            notify_tile_data_property_list_changed();
                             return true;
                         } else if (terrain_property == "color") {
                             tile_set->set_terrain_color(terrain_set_index, terrain_index, p_value);
                             terrain_set_to_terrain_bit_to_icon.get(terrain_set_index)[terrain_index + 1] = create_texture_from_color(p_value);
+                            notify_tile_data_property_list_changed();
                             return true;
                         }
                     }
@@ -472,6 +474,16 @@ bool TileToGridSet::_set(const StringName &p_name, const Variant &p_value) {
     }
     return false;
 }
+
+void  TileToGridSet::notify_tile_data_property_list_changed() {
+    for (int i = 0; i < tile_to_grid_data_list.size(); i++) {
+        Ref<TileToGridData> data = tile_to_grid_data_list[i];
+        if (data.is_valid()) {
+            data->notify_property_list_changed();
+        }
+    }
+}
+
 int TileToGridSet::get_tile_to_grid_data_count() const {
     return tile_to_grid_data_list.size();
 }

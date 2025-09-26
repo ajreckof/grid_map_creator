@@ -4,9 +4,9 @@
 #include <godot_cpp/classes/editor_plugin.hpp>
 #include <godot_cpp/classes/ref.hpp>
 
+#include "tile_to_grid_data_inspector_plugin.h"
 namespace godot {
 
-class TileToGridDataInspectorPlugin;
 
 class GridMapCreatorPlugin : public EditorPlugin {
 	GDCLASS(GridMapCreatorPlugin, EditorPlugin)

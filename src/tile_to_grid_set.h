@@ -32,7 +32,7 @@ public:
     TileToGridSet();
     ~TileToGridSet();
 
-    void set_tile_size(Vector2i p_tile_size);
+	void set_tile_size(Vector2i p_tile_size);
     Vector2i get_tile_size() const;
 
     void set_tile_to_grid_data_list(TypedArray<TileToGridData> p_tile_to_grid_data_list);
@@ -57,20 +57,23 @@ public:
 
     void set_terrain_set_count(int p_terrain_set_count);
     int get_terrain_set_count() const;
+    void set_terrain_set_terrain_count(int terrain_set_index, int p_value);
+    int get_terrain_set_terrain_count(int terrain_set_index) const;
     void update_ids();
 
 protected:
     static void _bind_methods();
     void _get_property_list(List<PropertyInfo> *p_list) const;
-    bool _get(const StringName &p_name, Variant &r_ret) const;
-    bool _set(const StringName &p_name, const Variant &p_value);
-    void setup_data(Ref<TileToGridData> data);
-    void unsetup_data(Ref<TileToGridData> data);
+	bool _get(const StringName &p_name, Variant &r_ret) const;
+	bool _set(const StringName &p_name, const Variant &p_value);
+	void notify_tile_data_property_list_changed();
+	void setup_data(Ref<TileToGridData> data);
+	void unsetup_data(Ref<TileToGridData> data);
 
 private:
     Ref<TileSet> tile_set;
     Vector<TypedArray<Texture2D>> terrain_set_to_terrain_bit_to_icon;
-    PackedStringArray terrain_set_to_hint_string;
+    TypedArray<String> terrain_set_to_hint_string;
     String terrain_set_hint_string;
     TypedArray<TileToGridData> tile_to_grid_data_list;
     Vector3 grid_size;

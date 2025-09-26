@@ -2,6 +2,8 @@
 
 #include "editor_plugin/grid_map_creator_plugin.h"
 #include "editor_plugin/read_only_resource_preview.h"
+#include "editor_plugin/tile_to_grid_data_inspector_plugin.h"
+#include "editor_plugin/editor_property_enum_icon.h"
 #include "mesh_utility/atlas_mesh.h"
 #include "mesh_utility/transformed_mesh.h"
 #include "mesh_utility/merged_mesh.h"
@@ -42,12 +44,14 @@ void initialize_module(ModuleInitializationLevel p_level) {
 			break;
 		case MODULE_INITIALIZATION_LEVEL_EDITOR:
 			GDREGISTER_CLASS(GridMapCreatorPlugin);
+			GDREGISTER_CLASS(ReadOnlyResourcePreview);
+			GDREGISTER_CLASS(TileToGridDataInspectorPlugin);
+			GDREGISTER_CLASS(EditorPropertyEnumIcon);
 			EditorPlugins::add_by_type<GridMapCreatorPlugin>();
 			break;
 		default:
 			break;
 	}
-
 }
 
 void uninitialize_module(ModuleInitializationLevel p_level) {

@@ -1,5 +1,4 @@
 #include "grid_map_creator_plugin.h"
-#include "tile_to_grid_data_inspector_plugin.h"
 
 #include <godot_cpp/core/class_db.hpp>
 
@@ -15,7 +14,7 @@ GridMapCreatorPlugin::~GridMapCreatorPlugin() {
 }
 
 void GridMapCreatorPlugin::_enter_tree() {
-	tile_to_grid_data_inspector_plugin.instantiate();
+	tile_to_grid_data_inspector_plugin = (Ref<TileToGridDataInspectorPlugin>) memnew(TileToGridDataInspectorPlugin);
 	add_inspector_plugin(tile_to_grid_data_inspector_plugin);
 }
 

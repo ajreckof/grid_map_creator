@@ -83,8 +83,8 @@ namespace godot {
         Vector2i get_tile_size() const;
         void set_terrain_set_to_terrain_bit_to_icon(Vector<TypedArray<Texture2D>> p_terrain_set_to_terrain_bit_to_icon);
         Vector<TypedArray<Texture2D>> get_terrain_set_to_terrain_bit_to_icon() const ;
-        void set_terrain_set_to_hint_string(PackedStringArray p_terrain_set_to_hint_string);
-        PackedStringArray get_terrain_set_to_hint_string() const ;
+        void set_terrain_set_to_hint_string(TypedArray<String> p_terrain_set_to_hint_string);
+        TypedArray<String> get_terrain_set_to_hint_string() const ;
         void set_terrain_set_hint_string(String p_terrain_set_hint_string);
         String get_terrain_set_hint_string() const ;
         Ref<MeshLibrary> get_mesh_library();
@@ -121,7 +121,7 @@ namespace godot {
         
         
         Vector<TypedArray<Texture2D>> terrain_set_to_terrain_bit_to_icon;
-        PackedStringArray terrain_set_to_hint_string;
+        TypedArray<String> terrain_set_to_hint_string;
         String terrain_set_hint_string;
         Vector3 grid_size = Vector3(0,0,0);
         Vector2i tile_size = Vector2i(16,16);
