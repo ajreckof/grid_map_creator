@@ -112,3 +112,29 @@ jobs:
           name: godot-cpp-template
           pattern: godot-cpp-template-*
           delete-merged: true
+  package-demo:
+    runs-on: ubuntu-latest
+    needs : merge
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            demo/addons
+          sparse-checkout-cone-mode: false
+
+      - name: Download godot-cpp-template artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: godot-cpp-template
+          path: demo/addons/grid_map_creator/bin
+
+
+      - name: Upload final package
+        uses: actions/upload-artifact@v4
+        with:
+          name: grid_map_creator
+          path: demo/addons/grid_map_creator
+      
+
+

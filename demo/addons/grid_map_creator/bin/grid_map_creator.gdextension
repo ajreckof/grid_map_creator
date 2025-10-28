@@ -3,6 +3,10 @@
 entry_symbol = "grid_map_creator_library_init"
 compatibility_minimum = "4.3"
 
+[icons]
+
+TileToGrid = "./icons/TileToGridMap.svg"
+
 [libraries]
 ; Relative paths ensure that our GDExtension can be placed anywhere in the project directory.
 macos.single.debug = "./macos/libgrid_map_creator.macos.template_debug.dylib"

@@ -1,10 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://djj3ycs62jivs"]
+[gd_scene load_steps=6 format=3 uid="uid://djj3ycs62jivs"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3jtl4"]
 resource_name = "test"
 
 [sub_resource type="TileSet" id="TileSet_cyfhg"]
-tile_size = Vector2i(64, 64)
 terrain_set_0/mode = 0
 terrain_set_0/terrain_0/name = "rempart"
 terrain_set_0/terrain_0/color = Color(0.5, 0.34375, 0.25, 1)
@@ -23,12 +22,18 @@ custom_data_layer_4/type = 24
 sources/0 = SubResource("TileSetAtlasSource_3jtl4")
 
 [sub_resource type="MergingTileToGridData" id="MergingTileToGridData_dt3sm"]
+mesh_count = 1
+mesh_0/id = 1
+mesh_0/rotation = Vector3(0, 0, 0)
+mesh_0/generate_symmetric = false
+mesh_0/bottom_bit = 0
+mesh_0/right_bit = 0
+mesh_0/bottom_right_bit = 0
 data_id = 0
 name = "test"
 
 [sub_resource type="TileToGridSet" id="TileToGridSet_8tq5p"]
 tile_set = SubResource("TileSet_cyfhg")
-tile_preview_size = Vector2i(64, 64)
 tile_to_grid_data_count = 1
 terrain_set_count = 1
 terrain_set_0/mode = 0
@@ -39,5 +44,8 @@ terrain_set_0/terrain_1/name = "path"
 terrain_set_0/terrain_1/color = Color(1.63645e-06, 0.845101, 0.288068, 1)
 tile_to_grid_data_0 = SubResource("MergingTileToGridData_dt3sm")
 
+[sub_resource type="MeshLibrary" id="MeshLibrary_3jtl4"]
+
 [node name="TileToGrid" type="TileToGrid" groups=["tiletogridgroup"]]
 tile_to_grid_set = SubResource("TileToGridSet_8tq5p")
+mesh_library = SubResource("MeshLibrary_3jtl4")
