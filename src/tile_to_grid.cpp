@@ -93,7 +93,12 @@ void TileToGrid::_ready() {
     // Connect signals
     connect("child_entered_tree", callable_mp(this, &TileToGrid::_on_child_entered_tree));
     connect("child_exiting_tree", callable_mp(this, &TileToGrid::_on_child_exiting_tree));
-    
+    if(!get_mesh_library().is_valid()) {
+        set_mesh_library(memnew(MeshLibrary));
+        if(tile_to_grid_set.is_valid()){
+            tile_to_grid_set->set_mesh_library(get_mesh_library());
+        }
+    }
     add_to_group("tiletogridgroup", true);
 
     if (!Engine::get_singleton()->is_editor_hint()) {
