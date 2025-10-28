@@ -1,0 +1,43 @@
+[gd_scene load_steps=5 format=3 uid="uid://djj3ycs62jivs"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3jtl4"]
+resource_name = "test"
+
+[sub_resource type="TileSet" id="TileSet_cyfhg"]
+tile_size = Vector2i(64, 64)
+terrain_set_0/mode = 0
+terrain_set_0/terrain_0/name = "rempart"
+terrain_set_0/terrain_0/color = Color(0.5, 0.34375, 0.25, 1)
+terrain_set_0/terrain_1/name = "path"
+terrain_set_0/terrain_1/color = Color(1.63645e-06, 0.845101, 0.288068, 1)
+custom_data_layer_0/name = "MeshName"
+custom_data_layer_0/type = 4
+custom_data_layer_1/name = "Rotation_X"
+custom_data_layer_1/type = 3
+custom_data_layer_2/name = "Rotation_Y"
+custom_data_layer_2/type = 3
+custom_data_layer_3/name = "Rotation_Z"
+custom_data_layer_3/type = 3
+custom_data_layer_4/name = "SceneName"
+custom_data_layer_4/type = 24
+sources/0 = SubResource("TileSetAtlasSource_3jtl4")
+
+[sub_resource type="MergingTileToGridData" id="MergingTileToGridData_dt3sm"]
+data_id = 0
+name = "test"
+
+[sub_resource type="TileToGridSet" id="TileToGridSet_8tq5p"]
+tile_set = SubResource("TileSet_cyfhg")
+tile_preview_size = Vector2i(64, 64)
+tile_to_grid_data_count = 1
+terrain_set_count = 1
+terrain_set_0/mode = 0
+terrain_set_0/terrain_count = 2
+terrain_set_0/terrain_0/name = "rempart"
+terrain_set_0/terrain_0/color = Color(0.5, 0.34375, 0.25, 1)
+terrain_set_0/terrain_1/name = "path"
+terrain_set_0/terrain_1/color = Color(1.63645e-06, 0.845101, 0.288068, 1)
+tile_to_grid_data_0 = SubResource("MergingTileToGridData_dt3sm")
+
+[node name="TileToGrid" type="TileToGrid" groups=["tiletogridgroup"]]
+tile_to_grid_set = SubResource("TileToGridSet_8tq5p")
