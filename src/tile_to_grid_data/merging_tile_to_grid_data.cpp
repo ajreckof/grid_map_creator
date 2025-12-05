@@ -11,11 +11,6 @@ MergingTileToGridData::MergingTileToGridData() : TileToGridData() {
     // Additional initialization specific to merging functionality
 }
 
-void MergingTileToGridData::_setup_local_to_scene() {
-    print_line("MergingTileToGridData::_setup_local_to_scene : ", get_local_scene());
-    init_tile_2D_preview();
-}
-
 
 Transform3D MergingTileToGridData::symmetry_tranform = Transform3D(
     Vector3(0,0,1),
@@ -30,12 +25,8 @@ Vector3 vec_mult(const Vector3 &a, const Vector3 &b) {
 
 TypedDictionary<String, TileItemData> MergingTileToGridData::_generate_tiles_data() {
     print_line("MergingTileToGridData::_generate_full_tiles -- changed_ids : ", changed_ids, " for source id : ", data_id);
-    if (_list_count == 0) {
+    if (_mesh_count == 0) {
         return TypedDictionary<String, TileItemData>();
-    }
-
-    if(!initialised){
-        init_tile_2D_preview();
     }
     // Generate all tuples of length k with numbers between 0 and n (inclusive)
     int k = 4;
@@ -44,8 +35,8 @@ TypedDictionary<String, TileItemData> MergingTileToGridData::_generate_tiles_dat
     PackedInt32Array id_tuple;
     index_tuple.resize(k);
     id_tuple.resize(k);
-    index_tuple.fill(-_list_count);
-    id_tuple.fill(get_ids(-_list_count));
+    index_tuple.fill(-_mesh_count);
+    id_tuple.fill(get_ids(-_mesh_count));
     if (check_tuple_validity(id_tuple)) {
         // If the tuple is valid, add it to the list
         all_tuples.push_back(id_tuple);
@@ -54,14 +45,14 @@ TypedDictionary<String, TileItemData> MergingTileToGridData::_generate_tiles_dat
     int idx = 0;
     while (idx < k) {
         // Increment tuple
-        if(index_tuple[idx] == _list_count - 1) {
+        if(index_tuple[idx] == _mesh_count - 1) {
             idx ++;
         } else {
             index_tuple[idx]++;
             id_tuple[idx] = get_ids(index_tuple[idx]);
             for (int j = 0; j < idx; ++j) {
-                index_tuple[j] = - _list_count; // Reset all previous indices 
-                id_tuple[j] = get_ids(-_list_count); // Reset all previous ids 
+                index_tuple[j] = - _mesh_count; // Reset all previous indices 
+                id_tuple[j] = get_ids(-_mesh_count); // Reset all previous ids 
             }
             if (check_tuple_validity(id_tuple) && !all_tuples.has(id_tuple)) {
                 // If the tuple is valid, add it to the list
@@ -114,9 +105,9 @@ void MergingTileToGridData::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_center_bit", "center_bit"), &MergingTileToGridData::set_center_bit);
     ADD_PROPERTY(PropertyInfo(Variant::INT, "center_bit", PROPERTY_HINT_ENUM, "", PROPERTY_USAGE_DEFAULT), "set_center_bit", "get_center_bit");
 
-    ClassDB::bind_method(D_METHOD("set_list_count", "count"), &MergingTileToGridData::set_list_count);
-    ClassDB::bind_method(D_METHOD("get_list_count"), &MergingTileToGridData::get_list_count);
-    ADD_PROPERTY(PropertyInfo(Variant::INT, "mesh_count", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_ARRAY | PROPERTY_USAGE_DEFAULT, "Meshes,mesh_"), "set_list_count", "get_list_count");
+    ClassDB::bind_method(D_METHOD("set_mesh_count", "count"), &MergingTileToGridData::set_mesh_count);
+    ClassDB::bind_method(D_METHOD("get_mesh_count"), &MergingTileToGridData::get_mesh_count);
+    ADD_PROPERTY(PropertyInfo(Variant::INT, "mesh_count", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_ARRAY | PROPERTY_USAGE_DEFAULT, "Meshes,mesh_"), "set_mesh_count", "get_mesh_count");
     
 }
 void MergingTileToGridData::_get_property_list(List<PropertyInfo> *p_list) const {
@@ -131,7 +122,7 @@ void MergingTileToGridData::_get_property_list(List<PropertyInfo> *p_list) const
     }
 
 
-    for (int i = 0; i < _list_count; ++i) {
+    for (int i = 0; i < _mesh_count; ++i) {
         Array arr_i;
         arr_i.push_back(i);
         p_list->push_back(PropertyInfo(Variant::INT, (base_name + ids_property_name).format(arr_i), PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_READ_ONLY));
@@ -174,7 +165,7 @@ bool MergingTileToGridData::_get(const StringName &p_name, Variant &r_ret) const
             print_line("MergingTileToGridData::_get: Invalid index format: ", string_index, " for name: ", p_name);
             return false; // Invalid index format
         }
-        if (index >= 0 && index < _list_count) {
+        if (index >= 0 && index < _mesh_count) {
             int id = ids[index];
             String variable = p_name.get_slice("/", 1);
             if (variable == mesh_property_name) {
@@ -215,7 +206,7 @@ bool MergingTileToGridData::_set(const StringName &p_name, const Variant &p_valu
             print_line("MergingTileToGridData::_set: Invalid index format: ", string_index, " for name: ", p_name);
             return false; // Invalid index format
         }
-        if (index >= 0 && index < _list_count) {
+        if (index >= 0 && index < _mesh_count) {
             int id = ids[index];
             String variable = p_name.get_slice("/", 1);
             print_line("MergingTileToGridData::_set: Setting ", variable," for index ", index, " (id ", id, ") to ", p_value);
@@ -373,9 +364,9 @@ Ref<ArrayMesh> MergingTileToGridData::get_mesh(int id) const{
     }
 }
 int MergingTileToGridData::get_ids(int index) const{
-    ERR_FAIL_COND_V_MSG(index < -_list_count || index >= _list_count, 0, "MergingTileToGridData::get_ids: Index : " + itos(index) + " out of bounds. Valid range is [-" + itos(_list_count) + ", " + itos(_list_count - 1) + "].");
+    ERR_FAIL_COND_V_MSG(index < -_mesh_count || index >= _mesh_count, 0, "MergingTileToGridData::get_ids: Index : " + itos(index) + " out of bounds. Valid range is [-" + itos(_mesh_count) + ", " + itos(_mesh_count - 1) + "].");
     if (index < 0) {
-        index += _list_count; // Convert negative index to positive index
+        index += _mesh_count; // Convert negative index to positive index
         return - get_ids(index);
     }
     return ids[index];
@@ -407,11 +398,12 @@ int MergingTileToGridData::get_right_bits(int id) const {
 }
 
 
-int MergingTileToGridData::get_list_count() const {
-    return _list_count;
+int MergingTileToGridData::get_mesh_count() const {
+    return _mesh_count;
 }
-void MergingTileToGridData::set_list_count(int count) {
-    _list_count = count;
+void MergingTileToGridData::set_mesh_count(int count) {
+    print_line("MergingTileToGridData::set_mesh_count: Setting list count to ", count, " for source id : ", data_id);
+    _mesh_count = count;
     ids.resize(count);
     
     int last_known_used_id = 0;
@@ -471,9 +463,6 @@ int MergingTileToGridData::get_center_bit() const {
 }
 
 void MergingTileToGridData::init_tile_2D_preview() {
-    if (!get_local_scene()) {
-        return;
-    }
     print_line("MergingTileToGridData::init_tile_2D_preview for source id : ", data_id);
     for (int id : ids) {
         if(!((Ref<MeshPreviewTexture>)_tile_2D_previews[id]).is_valid()) {
@@ -491,7 +480,6 @@ void MergingTileToGridData::init_tile_2D_preview() {
                 _transforms[id]
             );
             tile_2D_preview->set_mesh(transformed_meshes[id]);
-            tile_2D_preview->setup_local_to_scene();
             _tile_2D_previews[id] = tile_2D_preview;
 
             Ref<MeshPreviewTexture> tile_2D_preview_symmetric = memnew(MeshPreviewTexture);

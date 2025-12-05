@@ -13,10 +13,9 @@ public:
     MergingTileToGridData();
     ~MergingTileToGridData();
 
-    virtual void _setup_local_to_scene() override;
 
-    void set_list_count(int count);
-    int get_list_count() const;
+    void set_mesh_count(int count);
+    int get_mesh_count() const;
 
     void set_center_bit(int p_bit);
     int get_center_bit() const ;
@@ -93,7 +92,7 @@ private:
     TypedArray<int> ids;
     const StringName ids_property_name = "id";
 
-    int _list_count = 0;
+    int _mesh_count = 0;
 };
 
 } // namespace godot
